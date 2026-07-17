@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#0a0614"/>
+  <circle cx="600" cy="280" r="260" fill="#22d3ee" opacity="0.16"/>
+  <circle cx="360" cy="420" r="180" fill="#e879f9" opacity="0.14"/>
+  <circle cx="860" cy="180" r="160" fill="#a855f7" opacity="0.14"/>
+  <text x="600" y="290" text-anchor="middle" fill="#67e8f9" font-family="ui-monospace,monospace" font-size="48" font-weight="700">Next.js + Markdown</text>
+  <text x="600" y="360" text-anchor="middle" fill="#c4b5fd" font-family="system-ui,sans-serif" font-size="28">搭建可维护的技术博客</text>
+</svg>

@@ -1,0 +1,254 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* 默认：赛博霓虹 */
+:root,
+[data-theme="neon"] {
+  --background: #0a0614;
+  --foreground: #f3e8ff;
+  --card: #140d24;
+  --muted: #a78bfa;
+  --heading: #fdf4ff;
+  --prose: rgba(237, 233, 254, 0.9);
+  --accent: #e879f9;
+  --accent-cyan: #22d3ee;
+  --accent-soft: rgba(232, 121, 249, 0.12);
+  --border: #2e1b4d;
+  --border-strong: rgba(232, 121, 249, 0.25);
+  --nav-bg: rgba(10, 6, 20, 0.8);
+  --link: #67e8f9;
+  --chip-fg: #f0abfc;
+  --chip-bg: rgba(232, 121, 249, 0.12);
+  color-scheme: dark;
+}
+
+/* 护眼模式：低刺激黑色主题（弱化霓虹） */
+[data-theme="soft"] {
+  --background: #0b0b0c;
+  --foreground: #e4e4e7;
+  --card: #141416;
+  --muted: #a1a1aa;
+  --heading: #fafafa;
+  --prose: #d4d4d8;
+  --accent: #a3a3a3;
+  --accent-cyan: #94a3b8;
+  --accent-soft: rgba(255, 255, 255, 0.06);
+  --border: #27272a;
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --nav-bg: rgba(11, 11, 12, 0.92);
+  --link: #93c5fd;
+  --chip-fg: #d4d4d8;
+  --chip-bg: rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-border: var(--border);
+  --font-sans: var(--font-noto-sans-sc), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  min-height: 100%;
+}
+
+[data-theme="neon"] body,
+:root body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(192, 38, 211, 0.22), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(34, 211, 238, 0.12), transparent 50%),
+    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(168, 85, 247, 0.12), transparent 55%);
+  background-attachment: fixed;
+}
+
+[data-theme="soft"] body {
+  background-image: none;
+  background-color: var(--background);
+}
+
+/* 代码高亮 */
+.hljs {
+  color: #f3e8ff;
+  background: transparent;
+}
+.hljs-comment,
+.hljs-quote {
+  color: #8b7aa8;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-addition {
+  color: #e879f9;
+}
+.hljs-string,
+.hljs-meta .hljs-string,
+.hljs-attr {
+  color: #67e8f9;
+}
+.hljs-number,
+.hljs-literal {
+  color: #c4b5fd;
+}
+.hljs-title,
+.hljs-section,
+.hljs-name {
+  color: #f0abfc;
+}
+.hljs-type,
+.hljs-class .hljs-title,
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #22d3ee;
+}
+.hljs-variable,
+.hljs-template-variable {
+  color: #f9a8d4;
+}
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: #a5f3fc;
+}
+.hljs-deletion {
+  color: #f9a8d4;
+  background: rgba(232, 121, 249, 0.12);
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}
+
+[data-theme="soft"] .hljs {
+  color: #1e1b4b;
+}
+[data-theme="soft"] .hljs-keyword {
+  color: #a21caf;
+}
+[data-theme="soft"] .hljs-string {
+  color: #0f766e;
+}
+[data-theme="soft"] .hljs-comment {
+  color: #78716c;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(232, 121, 249, 0.35);
+  color: #fff;
+}
+
+[data-theme="soft"] ::selection {
+  background: rgba(162, 28, 175, 0.25);
+  color: #1c1917;
+}
+
+.text-neon-gradient {
+  background: linear-gradient(135deg, #e879f9 0%, #c084fc 45%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[data-theme="soft"] .text-neon-gradient {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--heading);
+}
+
+.btn-neon {
+  box-shadow:
+    0 0 0 1px rgba(232, 121, 249, 0.35),
+    0 0 20px rgba(232, 121, 249, 0.25),
+    0 0 40px rgba(34, 211, 238, 0.1);
+}
+
+.btn-neon:hover {
+  box-shadow:
+    0 0 0 1px rgba(232, 121, 249, 0.55),
+    0 0 28px rgba(232, 121, 249, 0.4),
+    0 0 50px rgba(34, 211, 238, 0.18);
+}
+
+[data-theme="soft"] .btn-neon {
+  box-shadow: none;
+  background-image: none !important;
+  background-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+[data-theme="soft"] .btn-neon:hover {
+  box-shadow: none;
+  background-color: #3f3f46 !important;
+  filter: none;
+}
+
+.card-neon {
+  box-shadow: 0 0 0 1px rgba(46, 27, 77, 0.5), 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.card-neon:hover {
+  box-shadow:
+    0 0 0 1px rgba(232, 121, 249, 0.35),
+    0 0 30px rgba(232, 121, 249, 0.1),
+    0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="soft"] .card-neon {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="soft"] .card-neon:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* 护眼模式下 prose / 代码块修正 */
+[data-theme="soft"] .prose {
+  --tw-prose-body: var(--prose);
+  --tw-prose-headings: var(--heading);
+  --tw-prose-links: var(--link);
+  --tw-prose-bold: var(--heading);
+  --tw-prose-code: #e4e4e7;
+  --tw-prose-pre-bg: #09090b;
+}
+
+[data-theme="soft"] .markdown-body code:not(pre code) {
+  color: #e4e4e7;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="soft"] .group\/pre pre {
+  background: #09090b;
+  border-color: #27272a;
+}
+
+[data-theme="soft"] ::selection {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fafafa;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

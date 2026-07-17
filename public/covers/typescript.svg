@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#0a0614"/>
+  <circle cx="600" cy="300" r="250" fill="#3178c6" opacity="0.22"/>
+  <circle cx="380" cy="200" r="160" fill="#e879f9" opacity="0.14"/>
+  <circle cx="840" cy="420" r="180" fill="#22d3ee" opacity="0.12"/>
+  <text x="600" y="290" text-anchor="middle" fill="#e879f9" font-family="ui-monospace,monospace" font-size="56" font-weight="700">TypeScript</text>
+  <text x="600" y="360" text-anchor="middle" fill="#c4b5fd" font-family="system-ui,sans-serif" font-size="28">实用小技巧 · 类型即文档</text>
+</svg>
