@@ -1,0 +1,31 @@
+{
+  "name": "blog",
+  "compatibility_date": "2026-02-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "worker/index.ts",
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "blog",
+      "database_id": "local-blog-db",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "UPLOADS",
+      "bucket_name": "blog-uploads",
+      "preview_bucket_name": "blog-uploads-preview"
+    }
+  ],
+  "vars": {
+    "NEXT_PUBLIC_GITHUB_USERNAME": "zemeng5208",
+    "NEXT_PUBLIC_PAYPAL_ME_URL": "https://paypal.me/zemeng520",
+    "NEXT_PUBLIC_PAYPAL_QR": "/paypal-qr.png"
+  }
+}

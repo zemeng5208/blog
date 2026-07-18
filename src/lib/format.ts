@@ -76,3 +76,19 @@ export function createHeadingIdGenerator() {
     return id;
   };
 }
+
+/** 从正文中截一段含关键词的预览（客户端可用） */
+export function snippetAround(content: string, query: string, radius = 40): string {
+  const plain = content
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/[#>*_`\[\]()!-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const q = query.trim().split(/\s+/)[0]?.toLowerCase() ?? "";
+  if (!q) return plain.slice(0, radius * 2);
+  const idx = plain.toLowerCase().indexOf(q);
+  if (idx < 0) return plain.slice(0, radius * 2) + (plain.length > radius * 2 ? "…" : "");
+  const start = Math.max(0, idx - radius);
+  const end = Math.min(plain.length, idx + q.length + radius);
+  return `${start > 0 ? "…" : ""}${plain.slice(start, end)}${end < plain.length ? "…" : ""}`;
+}

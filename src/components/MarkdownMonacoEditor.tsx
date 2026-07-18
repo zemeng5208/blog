@@ -11,6 +11,7 @@ import {
   type MdHint,
   type TriggerMatch,
 } from "@/lib/markdown-zh-docs";
+import { getThemeMeta } from "@/lib/themes";
 
 type Props = {
   value: string;
@@ -142,15 +143,15 @@ export function MarkdownMonacoEditor({ value, onChange, height = 420 }: Props) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [ready, setReady] = useState(false);
   const [hintBar, setHintBar] = useState<string>("在关键字后按 Tab 查看提示，例如输入 ` 再按 Tab");
-
-  const monacoTheme = theme === "soft" ? "md-soft" : "md-neon";
+  const editorDark = getThemeMeta(theme).dark;
+  const monacoTheme = editorDark ? "md-dark" : "md-light";
 
   const handleMount: OnMount = useCallback(
     (ed, monaco) => {
       editorRef.current = ed;
       registerMarkdownZhProviders(monaco);
 
-      monaco.editor.defineTheme("md-neon", {
+      monaco.editor.defineTheme("md-dark", {
         base: "vs-dark",
         inherit: true,
         rules: [
@@ -176,21 +177,21 @@ export function MarkdownMonacoEditor({ value, onChange, height = 420 }: Props) {
         },
       });
 
-      monaco.editor.defineTheme("md-soft", {
-        base: "vs-dark",
+      monaco.editor.defineTheme("md-light", {
+        base: "vs",
         inherit: true,
         rules: [],
         colors: {
-          "editor.background": "#0f0f10",
-          "editor.foreground": "#e4e4e7",
-          "editorLineNumber.foreground": "#52525b",
-          "editorSuggestWidget.background": "#141416",
-          "editorSuggestWidget.selectedBackground": "#27272a",
-          "editorWidget.background": "#141416",
+          "editor.background": "#fafafa",
+          "editor.foreground": "#18181b",
+          "editorLineNumber.foreground": "#a1a1aa",
+          "editorSuggestWidget.background": "#ffffff",
+          "editorSuggestWidget.selectedBackground": "#e4e4e7",
+          "editorWidget.background": "#ffffff",
         },
       });
 
-      monaco.editor.setTheme(theme === "soft" ? "md-soft" : "md-neon");
+      monaco.editor.setTheme(getThemeMeta(theme).dark ? "md-dark" : "md-light");
       setReady(true);
 
       // 提示列表打开：Tab = 选用当前词条
@@ -277,7 +278,7 @@ export function MarkdownMonacoEditor({ value, onChange, height = 420 }: Props) {
     if (!ready) return;
     const monaco = (window as unknown as { monaco?: typeof import("monaco-editor") }).monaco;
     if (monaco) {
-      monaco.editor.setTheme(theme === "soft" ? "md-soft" : "md-neon");
+      monaco.editor.setTheme(getThemeMeta(theme).dark ? "md-dark" : "md-light");
     }
   }, [theme, ready]);
 
@@ -285,8 +286,8 @@ export function MarkdownMonacoEditor({ value, onChange, height = 420 }: Props) {
     <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-[inset_0_0_0_1px_rgba(232,121,249,0.06)]">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] bg-[var(--background)]/50 px-3 py-2 text-xs text-[var(--muted)]">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="font-medium text-[var(--heading)]">Markdown</span>
-          <span className="hidden sm:inline">按关键字 + Tab</span>
+          <span className="font-medium text-[var(--heading)]">正文编辑器</span>
+          <span className="hidden sm:inline">关键字后按 Tab 出提示</span>
         </div>
         <div className="flex flex-wrap items-center gap-2 font-mono text-[11px]">
           <span>

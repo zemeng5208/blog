@@ -22,12 +22,16 @@ export function Header() {
           href="/"
           className="group flex items-center gap-2 font-semibold tracking-tight text-[var(--heading)]"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-400 text-sm font-bold text-white shadow-[0_0_16px_rgba(232,121,249,0.45)] transition group-hover:scale-105">
-            G
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white transition group-hover:scale-105"
+            style={{
+              background: "linear-gradient(135deg, var(--grad-from), var(--grad-via), var(--grad-to))",
+              boxShadow: "0 0 16px color-mix(in srgb, var(--accent) 40%, transparent)",
+            }}
+          >
+            B
           </span>
-          <span className="hidden bg-gradient-to-r from-fuchsia-300 via-purple-200 to-cyan-300 bg-clip-text text-transparent sm:inline">
-            {siteConfig.shortName}
-          </span>
+          <span className="text-neon-gradient hidden sm:inline">{siteConfig.shortName}</span>
         </Link>
 
         <div className="flex items-center gap-2">

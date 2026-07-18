@@ -1,7 +1,7 @@
 import { getAllPosts } from "@/lib/posts";
 import { siteConfig } from "@/lib/site";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 function escapeXml(value: string) {
   return value
@@ -13,7 +13,7 @@ function escapeXml(value: string) {
 }
 
 export async function GET() {
-  const posts = getAllPosts();
+  const posts = await getAllPosts();
   const items = posts
     .map((post) => {
       const link = `${siteConfig.url}/posts/${post.slug}`;
@@ -45,7 +45,7 @@ export async function GET() {
   return new Response(xml, {
     headers: {
       "Content-Type": "application/rss+xml; charset=utf-8",
-      "Cache-Control": "s-maxage=3600, stale-while-revalidate",
+      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
     },
   });
 }

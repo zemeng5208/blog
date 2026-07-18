@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import { PostCard } from "@/components/PostCard";
 import { getAllPosts } from "@/lib/posts";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "全部文章",
   description: "浏览博客中的所有技术文章。",
 };
 
-export default function PostsPage() {
-  const posts = getAllPosts();
+export default async function PostsPage() {
+  const posts = await getAllPosts();
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">

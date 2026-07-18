@@ -1,30 +1,17 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
 import { formatDate } from "@/lib/format";
+import { PostCover } from "@/components/PostCover";
 
 export function FeaturedPost({ post }: { post: PostMeta }) {
   return (
     <Link
       href={`/posts/${post.slug}`}
-      className="card-neon group relative block overflow-hidden rounded-2xl border border-fuchsia-500/30 bg-[var(--card)] transition hover:border-fuchsia-400/50"
+      className="post-card group relative block overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] transition"
     >
-      <div className="relative aspect-[2.2/1] w-full overflow-hidden bg-[#140d24]">
-        {post.cover ? (
-          <Image
-            src={post.cover}
-            alt={post.title}
-            fill
-            className="object-contain object-center transition duration-500 group-hover:scale-[1.02]"
-            sizes="(max-width: 768px) 100vw, 768px"
-            priority
-            unoptimized={post.cover.endsWith(".svg")}
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-600/40 via-purple-700/30 to-cyan-600/20" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0614] via-[#0a0614]/40 to-transparent" />
-        <div className="absolute top-3 left-3 rounded-full border border-fuchsia-400/40 bg-fuchsia-500/20 px-2.5 py-1 text-[11px] font-medium tracking-wide text-fuchsia-200 backdrop-blur">
+      <div className="relative aspect-[2.2/1] w-full overflow-hidden">
+        <PostCover post={post} size="lg" className="absolute inset-0 h-full w-full" />
+        <div className="absolute top-3 left-3 z-20 rounded-full border border-[var(--border-strong)] bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-medium tracking-wide text-[var(--accent)] backdrop-blur">
           精选
         </div>
       </div>
@@ -34,7 +21,7 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
           <span>·</span>
           <span>{post.readingTime}</span>
         </div>
-        <h2 className="text-xl font-semibold text-[var(--heading)] transition group-hover:text-fuchsia-300 sm:text-2xl">
+        <h2 className="text-xl font-semibold text-[var(--heading)] transition group-hover:text-[var(--accent)] sm:text-2xl">
           {post.title}
         </h2>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[var(--muted)] sm:text-[15px]">

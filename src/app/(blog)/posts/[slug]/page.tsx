@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AuthorCard } from "@/components/AuthorCard";
 import { GiscusComments } from "@/components/GiscusComments";
 import { Markdown } from "@/components/Markdown";
+import { PostCover } from "@/components/PostCover";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { TableOfContents } from "@/components/TableOfContents";
@@ -13,23 +13,20 @@ import {
   extractHeadings,
   getAllPosts,
   getPostBySlug,
-  getPublishedSlugs,
   getRelatedPosts,
 } from "@/lib/posts";
 import { siteConfig } from "@/lib/site";
+
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return getPublishedSlugs().map((slug) => ({ slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const post = getPostBySlug(slug);
+    const post = await getPostBySlug(slug);
     return {
       title: post.title,
       description: post.description,
@@ -54,7 +51,7 @@ export default async function PostPage({ params }: Props) {
   const { slug } = await params;
   let post;
   try {
-    post = getPostBySlug(slug);
+    post = await getPostBySlug(slug);
   } catch {
     notFound();
   }
@@ -63,12 +60,12 @@ export default async function PostPage({ params }: Props) {
     notFound();
   }
 
-  const all = getAllPosts();
+  const all = await getAllPosts();
   const index = all.findIndex((p) => p.slug === slug);
   const prev = index >= 0 && index < all.length - 1 ? all[index + 1] : null;
   const next = index > 0 ? all[index - 1] : null;
   const headings = extractHeadings(post.content);
-  const related = getRelatedPosts(slug, 3);
+  const related = await getRelatedPosts(slug, 3);
 
   return (
     <>
@@ -81,19 +78,9 @@ export default async function PostPage({ params }: Props) {
           ← 返回文章列表
         </Link>
 
-        {post.cover && (
-          <div className="relative mb-8 aspect-[2.2/1] overflow-hidden rounded-2xl border border-[var(--border)]">
-            <Image
-              src={post.cover}
-              alt={post.title}
-              fill
-              className="object-contain object-center bg-[#0a0614]"
-              sizes="(max-width: 768px) 100vw, 768px"
-              priority
-              unoptimized={post.cover.endsWith(".svg")}
-            />
-          </div>
-        )}
+        <div className="relative mb-8 aspect-[2.2/1] overflow-hidden rounded-2xl border border-[var(--border)]">
+          <PostCover post={post} size="lg" className="absolute inset-0 h-full w-full" />
+        </div>
 
         <header className="mb-10 border-b border-[var(--border)] pb-10">
           <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--muted)]">
@@ -103,7 +90,19 @@ export default async function PostPage({ params }: Props) {
             {post.featured && (
               <>
                 <span aria-hidden>·</span>
-                <span className="text-fuchsia-300">精选</span>
+                <span className="text-[var(--accent)]">精选</span>
+              </>
+            )}
+            {post.series && (
+              <>
+                <span aria-hidden>·</span>
+                <Link
+                  href={`/series/${encodeURIComponent(post.series)}`}
+                  className="text-[var(--chip-fg)] hover:underline"
+                >
+                  系列 · {post.series}
+                  {post.seriesOrder ? ` #${post.seriesOrder}` : ""}
+                </Link>
               </>
             )}
           </div>
@@ -119,7 +118,7 @@ export default async function PostPage({ params }: Props) {
                 <li key={tag}>
                   <Link
                     href={`/tags/${encodeURIComponent(tag)}`}
-                    className="rounded-full border border-fuchsia-500/20 bg-fuchsia-500/10 px-3 py-1 text-sm text-fuchsia-300 transition hover:border-cyan-400/40 hover:text-cyan-300"
+                    className="rounded-full border border-[var(--border)] bg-[var(--chip-bg)] px-3 py-1 text-sm text-[var(--chip-fg)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
                   >
                     #{tag}
                   </Link>
@@ -141,7 +140,7 @@ export default async function PostPage({ params }: Props) {
           {prev ? (
             <Link
               href={`/posts/${prev.slug}`}
-              className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 transition hover:border-fuchsia-400/50"
+              className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 transition hover:border-[var(--accent)]"
             >
               <span className="text-xs text-[var(--muted)]">上一篇</span>
               <p className="mt-1 font-medium text-[var(--heading)]">{prev.title}</p>
@@ -152,7 +151,7 @@ export default async function PostPage({ params }: Props) {
           {next && (
             <Link
               href={`/posts/${next.slug}`}
-              className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 text-right transition hover:border-cyan-400/50"
+              className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 text-right transition hover:border-[var(--accent)]"
             >
               <span className="text-xs text-[var(--muted)]">下一篇</span>
               <p className="mt-1 font-medium text-[var(--heading)]">{next.title}</p>

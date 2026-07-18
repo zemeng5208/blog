@@ -1,37 +1,56 @@
 {
-  "name": "grokdemo-blog",
+  "name": "blog",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "vinext dev",
+    "dev:next": "next dev",
+    "build": "vinext build",
+    "build:next": "next build",
+    "start": "vinext start",
+    "start:next": "next start",
     "lint": "eslint",
-    "deploy:local": "powershell -ExecutionPolicy Bypass -File ./scripts/local-deploy.ps1",
-    "deploy:local:skip-build": "powershell -ExecutionPolicy Bypass -File ./scripts/local-deploy.ps1 -SkipBuild",
-    "prod": "npm run build && npm run start"
+    "db:seed": "node ./scripts/seed-d1.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply blog --local",
+    "db:migrate:preview": "wrangler d1 migrations apply blog --local --config dist/server/wrangler.json",
+    "preview:cf": "wrangler dev --config dist/server/wrangler.json --port 3000 --ip 127.0.0.1",
+    "deploy:cf": "npx @vinext/cloudflare deploy",
+    "prod": "npm run build && npm run start",
+    "prod:cf": "npm run build && npm run preview:cf"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
+    "drizzle-orm": "^0.45.2",
     "gray-matter": "^4.0.3",
     "monaco-editor": "^0.55.1",
     "next": "16.2.10",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "qrcode": "^1.5.4",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
     "react-markdown": "^10.1.0",
+    "react-server-dom-webpack": "19.2.6",
     "reading-time": "^1.5.0",
     "rehype-highlight": "^7.0.2",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "vinext": "1.0.0-beta.2"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.45.1",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.0",
+    "@vitejs/plugin-rsc": "^0.5.0",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^8.0.0",
+    "wrangler": "^4.20.0"
   }
 }

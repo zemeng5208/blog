@@ -10,7 +10,10 @@ export default function NotFound() {
       <p className="mt-3 text-[var(--muted)]">链接可能已失效，或文章尚未发布。</p>
       <Link
         href="/"
-        className="btn-neon mt-8 inline-flex rounded-full bg-gradient-to-r from-fuchsia-600 via-purple-600 to-cyan-500 px-5 py-2.5 text-sm font-medium text-white transition hover:brightness-110"
+        className="btn-neon mt-8 inline-flex rounded-full px-5 py-2.5 text-sm font-medium text-white transition hover:brightness-110"
+        style={{
+          background: "linear-gradient(135deg, var(--grad-from), var(--grad-via), var(--grad-to))",
+        }}
       >
         返回首页
       </Link>

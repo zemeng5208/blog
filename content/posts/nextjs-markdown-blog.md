@@ -3,6 +3,8 @@ title: 用 Next.js 搭建 Markdown 技术博客
 description: 从内容目录、frontmatter 到路由生成，拆解一个简洁可维护的静态博客架构。
 date: 2026-07-12
 cover: /covers/nextjs.svg
+series: 博客搭建
+seriesOrder: 4
 tags:
   - Next.js
   - Markdown

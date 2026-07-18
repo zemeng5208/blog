@@ -4,13 +4,11 @@ import { notFound } from "next/navigation";
 import { PostCard } from "@/components/PostCard";
 import { getAllTags, getPostsByTag } from "@/lib/posts";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ tag: string }>;
 };
-
-export function generateStaticParams() {
-  return getAllTags().map(({ tag }) => ({ tag }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tag } = await params;
@@ -24,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function TagPage({ params }: Props) {
   const { tag } = await params;
   const decoded = decodeURIComponent(tag);
-  const posts = getPostsByTag(decoded);
+  const posts = await getPostsByTag(decoded);
 
   if (posts.length === 0) {
     notFound();

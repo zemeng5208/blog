@@ -20,7 +20,7 @@ export function MarkdownCheatsheet({ onInsert }: Props) {
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-[var(--heading)]"
       >
-        <span>Markdown 中文词条</span>
+        <span>语法词条（中文）</span>
         <span className="text-[var(--muted)]">{open ? "收起" : "展开"}</span>
       </button>
 

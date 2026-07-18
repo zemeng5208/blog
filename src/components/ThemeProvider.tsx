@@ -7,34 +7,40 @@ import {
   useMemo,
   useSyncExternalStore,
 } from "react";
-
-export type ThemeMode = "neon" | "soft";
+import {
+  DEFAULT_THEME,
+  THEME_IDS,
+  type ThemeId,
+  getThemeMeta,
+  normalizeThemeId,
+} from "@/lib/themes";
 
 type ThemeContextValue = {
-  theme: ThemeMode;
-  setTheme: (t: ThemeMode) => void;
-  toggleTheme: () => void;
+  theme: ThemeId;
+  setTheme: (t: ThemeId) => void;
+  /** 在主题列表中循环切换到下一个 */
+  cycleTheme: () => void;
+  themes: typeof THEME_IDS;
+  meta: ReturnType<typeof getThemeMeta>;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
-const STORAGE_KEY = "grokdemo-theme";
-const THEME_EVENT = "grokdemo-theme-change";
+const STORAGE_KEY = "blog-theme";
+const THEME_EVENT = "blog-theme-change";
 
-function isThemeMode(value: string | null): value is ThemeMode {
-  return value === "neon" || value === "soft";
-}
-
-function readTheme(): ThemeMode {
-  if (typeof window === "undefined") return "neon";
+function readTheme(): ThemeId {
+  if (typeof window === "undefined") return DEFAULT_THEME;
   try {
-    const fromDom = document.documentElement.getAttribute("data-theme");
-    if (isThemeMode(fromDom)) return fromDom;
-    const saved = window.localStorage.getItem(STORAGE_KEY);
-    if (isThemeMode(saved)) return saved;
+    const fromDom = normalizeThemeId(document.documentElement.getAttribute("data-theme"));
+    if (fromDom) return fromDom;
+    const saved =
+      normalizeThemeId(window.localStorage.getItem(STORAGE_KEY)) ||
+      normalizeThemeId(window.localStorage.getItem("grokdemo-theme"));
+    if (saved) return saved;
   } catch {
     /* ignore */
   }
-  return "neon";
+  return DEFAULT_THEME;
 }
 
 function subscribe(onStoreChange: () => void) {
@@ -47,8 +53,12 @@ function subscribe(onStoreChange: () => void) {
   };
 }
 
-function applyTheme(theme: ThemeMode) {
-  document.documentElement.setAttribute("data-theme", theme);
+export function applyTheme(theme: ThemeId) {
+  const root = document.documentElement;
+  root.setAttribute("data-theme", theme);
+  // 同步 color-scheme，减轻浏览器表单/滚动条不匹配
+  const dark = ["neon", "soft", "terminal"].includes(theme);
+  root.style.colorScheme = dark ? "dark" : "light";
   try {
     window.localStorage.setItem(STORAGE_KEY, theme);
   } catch {
@@ -58,19 +68,27 @@ function applyTheme(theme: ThemeMode) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const theme = useSyncExternalStore(subscribe, readTheme, () => "neon" as ThemeMode);
+  const theme = useSyncExternalStore(subscribe, readTheme, () => DEFAULT_THEME);
 
-  const setTheme = useCallback((t: ThemeMode) => {
+  const setTheme = useCallback((t: ThemeId) => {
     applyTheme(t);
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    applyTheme(theme === "neon" ? "soft" : "neon");
+  const cycleTheme = useCallback(() => {
+    const idx = THEME_IDS.indexOf(theme);
+    const next = THEME_IDS[(idx + 1) % THEME_IDS.length];
+    applyTheme(next);
   }, [theme]);
 
   const value = useMemo(
-    () => ({ theme, setTheme, toggleTheme }),
-    [theme, setTheme, toggleTheme],
+    () => ({
+      theme,
+      setTheme,
+      cycleTheme,
+      themes: THEME_IDS,
+      meta: getThemeMeta(theme),
+    }),
+    [theme, setTheme, cycleTheme],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
@@ -81,3 +99,6 @@ export function useTheme() {
   if (!ctx) throw new Error("useTheme 必须在 ThemeProvider 内使用");
   return ctx;
 }
+
+/** @deprecated 使用 ThemeId */
+export type ThemeMode = ThemeId;

@@ -36,7 +36,7 @@ export type GitHubRepo = {
 function authHeaders(): HeadersInit {
   const headers: HeadersInit = {
     Accept: "application/vnd.github+json",
-    "User-Agent": "grokdemo-blog",
+    "User-Agent": "blog",
     "X-GitHub-Api-Version": "2022-11-28",
   };
   const token = process.env.GITHUB_TOKEN;

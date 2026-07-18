@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllTags } from "@/lib/posts";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "标签",
   description: "按标签浏览技术文章。",
 };
 
-export default function TagsPage() {
-  const tags = getAllTags();
+export default async function TagsPage() {
+  const tags = await getAllTags();
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -22,10 +24,10 @@ export default function TagsPage() {
           <li key={tag}>
             <Link
               href={`/tags/${encodeURIComponent(tag)}`}
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm text-[var(--muted)] transition hover:border-fuchsia-400/50 hover:text-fuchsia-200"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm text-[var(--muted)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
             >
               <span>#{tag}</span>
-              <span className="rounded-full bg-fuchsia-500/15 px-2 py-0.5 text-xs text-fuchsia-300">
+              <span className="rounded-full bg-[var(--chip-bg)] px-2 py-0.5 text-xs text-[var(--chip-fg)]">
                 {count}
               </span>
             </Link>

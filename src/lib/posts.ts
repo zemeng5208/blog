@@ -1,18 +1,21 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import readingTime from "reading-time";
+import { tryGetCloudflareEnv } from "@/lib/cloudflare";
 import {
   createHeadingIdGenerator,
   formatDate,
-  normalizeDate,
   normalizeHeadingText,
   slugifyHeading,
 } from "@/lib/format";
+import {
+  dbGetAllPosts,
+  dbGetAllPostsWithContent,
+  dbGetAllSeries,
+  dbGetFeaturedPosts,
+  dbGetPostBySlug,
+  dbGetPostsBySeries,
+  dbGetPublishedSlugs,
+} from "@/lib/posts-db";
 
 export { formatDate, slugifyHeading };
-
-const postsDirectory = path.join(process.cwd(), "content/posts");
 
 export type PostMeta = {
   slug: string;
@@ -24,9 +27,15 @@ export type PostMeta = {
   draft?: boolean;
   featured?: boolean;
   cover?: string;
+  series?: string;
+  seriesOrder?: number;
 };
 
 export type Post = PostMeta & {
+  content: string;
+};
+
+export type SearchDoc = PostMeta & {
   content: string;
 };
 
@@ -36,13 +45,16 @@ export type Heading = {
   level: number;
 };
 
-function ensurePostsDir() {
-  if (!fs.existsSync(postsDirectory)) {
-    fs.mkdirSync(postsDirectory, { recursive: true });
+/** 生产环境唯一数据源：D1。不可用时明确报错（不再回退 MySQL/本地 md 运行时读取） */
+function assertD1() {
+  const env = tryGetCloudflareEnv();
+  if (!env?.DB) {
+    throw new Error(
+      "D1 绑定 DB 不可用。请通过 Sites/vinext 运行，并确保 hosting.json 中配置了 d1: DB。",
+    );
   }
 }
 
-/** 从 Markdown 提取二级/三级标题，生成目录（id 与 Markdown 组件一致） */
 export function extractHeadings(content: string): Heading[] {
   const headings: Heading[] = [];
   const nextId = createHeadingIdGenerator();
@@ -67,76 +79,46 @@ export function extractHeadings(content: string): Heading[] {
   return headings;
 }
 
-export function getPostSlugs(): string[] {
-  ensurePostsDir();
-  return fs
-    .readdirSync(postsDirectory)
-    .filter((file) => file.endsWith(".md"))
-    .map((file) => file.replace(/\.md$/, ""));
+export async function getPublishedSlugs(): Promise<string[]> {
+  assertD1();
+  return dbGetPublishedSlugs();
 }
 
-/** 仅已发布文章的 slug（用于静态生成） */
-export function getPublishedSlugs(): string[] {
-  return getAllPosts().map((p) => p.slug);
+export async function getPostBySlug(slug: string): Promise<Post> {
+  assertD1();
+  const post = await dbGetPostBySlug(slug);
+  if (!post) {
+    throw new Error(`文章不存在: ${slug}`);
+  }
+  return post;
 }
 
-export function getPostBySlug(slug: string): Post {
-  const fullPath = path.join(postsDirectory, `${slug}.md`);
-  const fileContents = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(fileContents);
-  const stats = readingTime(content);
-  const minutes = Math.max(1, Math.ceil(stats.minutes));
-
-  return {
-    slug,
-    title: typeof data.title === "string" ? data.title : slug,
-    description: typeof data.description === "string" ? data.description : "",
-    date: normalizeDate(data.date),
-    tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-    readingTime: `${minutes} 分钟阅读`,
-    draft: Boolean(data.draft),
-    featured: Boolean(data.featured),
-    cover: typeof data.cover === "string" ? data.cover : undefined,
-    content,
-  };
+export async function getAllPosts(): Promise<PostMeta[]> {
+  assertD1();
+  return dbGetAllPosts();
 }
 
-export function getAllPosts(): PostMeta[] {
-  return getPostSlugs()
-    .map((slug) => {
-      const post = getPostBySlug(slug);
-      return {
-        slug: post.slug,
-        title: post.title,
-        description: post.description,
-        date: post.date,
-        tags: post.tags,
-        readingTime: post.readingTime,
-        draft: post.draft,
-        featured: post.featured,
-        cover: post.cover,
-      };
-    })
-    .filter((post) => !post.draft)
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+export async function getAllPostsWithContent(): Promise<Post[]> {
+  assertD1();
+  return dbGetAllPostsWithContent();
 }
 
-export function getFeaturedPosts(): PostMeta[] {
-  const featured = getAllPosts().filter((p) => p.featured);
-  if (featured.length > 0) return featured;
-  return getAllPosts().slice(0, 1);
+export async function getFeaturedPosts(): Promise<PostMeta[]> {
+  assertD1();
+  return dbGetFeaturedPosts();
 }
 
-export function getPostsByTag(tag: string): PostMeta[] {
+export async function getPostsByTag(tag: string): Promise<PostMeta[]> {
   const decoded = decodeURIComponent(tag);
-  return getAllPosts().filter((post) =>
+  const all = await getAllPosts();
+  return all.filter((post) =>
     post.tags.some((t) => t.toLowerCase() === decoded.toLowerCase()),
   );
 }
 
-export function getAllTags(): { tag: string; count: number }[] {
+export async function getAllTags(): Promise<{ tag: string; count: number }[]> {
   const map = new Map<string, number>();
-  for (const post of getAllPosts()) {
+  for (const post of await getAllPosts()) {
     for (const tag of post.tags) {
       map.set(tag, (map.get(tag) ?? 0) + 1);
     }
@@ -146,37 +128,55 @@ export function getAllTags(): { tag: string; count: number }[] {
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, "zh-CN"));
 }
 
-/** 按共同标签推荐；不足时用最新文章补齐 */
-export function getRelatedPosts(slug: string, limit = 3): PostMeta[] {
+export async function getPostsBySeries(series: string): Promise<PostMeta[]> {
+  assertD1();
+  return dbGetPostsBySeries(decodeURIComponent(series));
+}
+
+export async function getAllSeries(): Promise<{ series: string; count: number }[]> {
+  assertD1();
+  return dbGetAllSeries();
+}
+
+export async function getRelatedPosts(slug: string, limit = 3): Promise<PostMeta[]> {
   let current: Post;
   try {
-    current = getPostBySlug(slug);
+    current = await getPostBySlug(slug);
   } catch {
     return [];
   }
   if (current.draft) return [];
 
-  const others = getAllPosts().filter((p) => p.slug !== slug);
+  const others = (await getAllPosts()).filter((p) => p.slug !== slug);
   const scored = others
     .map((p) => ({
       post: p,
-      score: p.tags.filter((t) => current.tags.includes(t)).length,
+      score:
+        (p.series && p.series === current.series ? 10 : 0) +
+        p.tags.filter((t) => current.tags.includes(t)).length,
     }))
     .sort((a, b) => b.score - a.score || (a.post.date < b.post.date ? 1 : -1));
 
   const related = scored.filter((x) => x.score > 0).map((x) => x.post);
   if (related.length >= limit) return related.slice(0, limit);
-
   const fill = others.filter((p) => !related.some((r) => r.slug === p.slug));
   return [...related, ...fill].slice(0, limit);
 }
 
-export function searchPosts(query: string): PostMeta[] {
+export async function searchPosts(query: string): Promise<SearchDoc[]> {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   const tokens = q.split(/\s+/).filter(Boolean);
-  return getAllPosts().filter((post) => {
-    const hay = [post.title, post.description, post.tags.join(" "), post.slug]
+  const all = await getAllPostsWithContent();
+  return all.filter((post) => {
+    const hay = [
+      post.title,
+      post.description,
+      post.tags.join(" "),
+      post.slug,
+      post.series ?? "",
+      post.content,
+    ]
       .join(" ")
       .toLowerCase();
     return tokens.every((t) => hay.includes(t));

@@ -1,114 +1,91 @@
-# GrokDemo 个人技术博客
+# Blog · 技术博客
 
-基于 **Next.js + TypeScript + Tailwind CSS + Markdown** 的赛博霓虹风个人技术博客。
+基于 **Next.js + vinext + TypeScript + Tailwind + D1 + R2** 的个人技术博客，面向 **OpenAI Sites / Cloudflare Workers** 部署。
 
-## 项目唯一根目录
-
-```text
-D:\grokdemo
-```
-
-**所有文件（源码、文章、脚本、配置、文档）都必须在此文件夹内。**  
-不要写到 `C:\Users\...` 或其他路径。
-
-## 目录结构
+## 项目目录
 
 ```text
-D:\grokdemo\
-├── content/posts/       # 博客文章（Markdown）
-├── docs/                # 项目文档
-├── public/              # 静态资源、封面、头像
-├── scripts/             # 本地部署脚本
-├── src/                 # 全部源码
-│   ├── app/             # 页面与 API
-│   ├── components/      # UI 组件
-│   └── lib/             # 工具与配置
-├── .env.example         # 环境变量模板（提交 git）
-├── .env.local           # 本地密钥（不提交）
-├── package.json
-└── README.md
+D:\blog
 ```
 
-## 开发模式
+所有源码、文章、脚本、配置均在此文件夹内。依赖安装在：
+
+```text
+D:\blog\node_modules
+```
+
+## 快速启动（本地）
+
+1. 复制环境变量：将 `.env.example` 复制为 `.env.local`，填写 `POST_WRITE_SECRET`。
+2. 初始化本地 D1（首次）：
 
 ```powershell
-cd D:\grokdemo
-npm install
+cd D:\blog
+npm install --legacy-peer-deps
+npm run db:migrate:local
+```
+
+3. 启动开发：
+
+```powershell
 npm run dev
+# 或双击 一键启动.bat
 ```
 
 打开 http://localhost:3000
 
-## 本地生产部署（不上公网）
-
-详见 [`docs/本地部署.md`](docs/本地部署.md)。
+## 生产构建（本地验收）
 
 ```powershell
-cd D:\grokdemo
-npm run prod
-# 或
-npm run deploy:local
+cd D:\blog
+npm run build
+# 产物：dist/server/index.js 、 dist/client/
+npm run start
 ```
 
-## 功能一览
+## 目录结构
 
-- GitHub 头像 / 资料同步（`zemeng5208`）
-- Markdown 文章 + 封面 + 精选
-- 标签、搜索、RSS、sitemap
-- 阅读进度、目录 TOC、代码复制、相关文章
-- 霓虹 / 护眼黑主题
-- 写文章：Monaco 编辑器 + 中文关键字 Tab 提示
-- Giscus 评论（可选）
-
-## 个人化
-
-编辑 **`src/lib/site.ts`**，或配置 **`.env.local`**：
-
-```env
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_GITHUB_USERNAME=zemeng5208
-POST_WRITE_SECRET=local-dev-secret
+```text
+D:\blog\
+├── content/posts/       历史 Markdown（种子来源）
+├── db/                  Drizzle schema
+├── drizzle/             D1 迁移 + 种子 SQL
+├── docs/                文档（含 Sites 公网部署说明）
+├── src/                 应用源码
+├── worker/              Worker 入口
+├── .openai/hosting.json Sites D1/R2 绑定
+├── wrangler.jsonc       Cloudflare 本地/部署配置
+├── vite.config.ts       vinext 构建
+├── 一键启动.bat
+└── 一键生产启动.bat
 ```
 
-## 写文章
-
-1. 浏览器打开 http://localhost:3000/write  
-2. 或在 **`content/posts/`** 新建 `.md`：
-
-```markdown
----
-title: 文章标题
-description: 一句话摘要
-date: 2026-07-17
-featured: true
-cover: /covers/my-cover.svg
-tags:
-  - 前端
----
-
-正文……
-```
-
-## 常用地址
+## 常用功能
 
 | 路径 | 说明 |
 |------|------|
 | `/` | 首页 |
 | `/posts` | 文章列表 |
-| `/write` | 写文章 |
-| `/search` | 搜索 |
-| `/tags` | 标签 |
-| `/about` | 关于 |
-| `/feed.xml` | RSS |
-| `/sitemap.xml` | 站点地图 |
+| `/series` | 系列 |
+| `/search` | 全文搜索 |
+| `/write` | 在线写文章（需 `POST_WRITE_SECRET`） |
+| `/support` | PayPal 赞助 |
+| `/about` | 关于 / 代表作 |
 
-## 脚本
+## 数据与上传
 
-| 命令 | 说明 |
-|------|------|
-| `npm run dev` | 开发 |
-| `npm run build` | 生产构建 |
-| `npm run start` | 生产启动 |
-| `npm run prod` | 构建并启动 |
-| `npm run deploy:local` | 本地部署脚本 |
-| `npm run lint` | 代码检查 |
+- **文章**：Cloudflare **D1**（binding `DB`），不再使用 MySQL
+- **图片上传**：Cloudflare **R2**（binding `UPLOADS`），禁止 SVG
+- **鉴权**：请求头 `x-post-token` 必须等于环境变量 `POST_WRITE_SECRET`
+
+## 公网部署
+
+本地已完成迁移与构建验收。**Sites 推公网**请交给 Codex，说明见：
+
+- [`docs/Sites部署-给Codex.md`](./docs/Sites部署-给Codex.md)
+
+## 配置
+
+- 站点信息：`src/lib/site.ts`
+- 环境变量模板：`.env.example`（本地用 `.env.local`，勿提交）
+- 公开 vars：`wrangler.jsonc` 中的 `vars`

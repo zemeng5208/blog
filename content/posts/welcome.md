@@ -2,8 +2,10 @@
 title: 欢迎来到我的技术博客
 description: 第一篇文章：介绍这个博客的定位、写作计划，以及如何用 Markdown 发布内容。
 date: 2026-07-10
-featured: true
+featured: false
 cover: /covers/welcome.svg
+series: 博客搭建
+seriesOrder: 0
 tags:
   - 随笔
   - 博客

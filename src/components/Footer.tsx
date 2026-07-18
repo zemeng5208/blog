@@ -19,7 +19,7 @@ export async function Footer() {
             rel="noopener noreferrer"
             className="transition hover:text-[var(--accent)]"
           >
-            GitHub
+            代码仓库
           </a>
           {profile.email && (
             <a
@@ -29,8 +29,11 @@ export async function Footer() {
               邮箱
             </a>
           )}
+          <Link href="/support" className="transition hover:text-[var(--accent)]">
+            赞助
+          </Link>
           <Link href={siteConfig.social.rss} className="transition hover:text-[var(--accent)]">
-            RSS
+            订阅
           </Link>
         </div>
       </div>

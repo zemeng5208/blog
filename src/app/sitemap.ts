@@ -1,19 +1,28 @@
 import type { MetadataRoute } from "next";
-import { getAllPosts, getAllTags } from "@/lib/posts";
+import { getAllPosts, getAllSeries, getAllTags } from "@/lib/posts";
 import { siteConfig } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const posts = getAllPosts();
-  const tags = getAllTags();
+export const dynamic = "force-dynamic";
 
-  const staticRoutes: MetadataRoute.Sitemap = ["", "/posts", "/tags", "/about", "/search"].map(
-    (path) => ({
-      url: `${siteConfig.url}${path}`,
-      lastModified: new Date(),
-      changeFrequency: path === "" || path === "/posts" ? "weekly" : "monthly",
-      priority: path === "" ? 1 : 0.7,
-    }),
-  );
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await getAllPosts();
+  const tags = await getAllTags();
+  const seriesList = await getAllSeries();
+
+  const staticRoutes: MetadataRoute.Sitemap = [
+    "",
+    "/posts",
+    "/tags",
+    "/series",
+    "/about",
+    "/search",
+    "/support",
+  ].map((path) => ({
+    url: `${siteConfig.url}${path}`,
+    lastModified: new Date(),
+    changeFrequency: path === "" || path === "/posts" ? "weekly" : "monthly",
+    priority: path === "" ? 1 : 0.7,
+  }));
 
   const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${siteConfig.url}/posts/${post.slug}`,
@@ -29,5 +38,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   }));
 
-  return [...staticRoutes, ...postRoutes, ...tagRoutes];
+  const seriesRoutes: MetadataRoute.Sitemap = seriesList.map(({ series }) => ({
+    url: `${siteConfig.url}/series/${encodeURIComponent(series)}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.55,
+  }));
+
+  return [...staticRoutes, ...postRoutes, ...tagRoutes, ...seriesRoutes];
 }

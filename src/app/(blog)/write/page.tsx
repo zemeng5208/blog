@@ -14,7 +14,7 @@ export default function WritePage() {
         <p className="text-sm font-medium tracking-wide text-[var(--accent)]">编辑器</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-[var(--heading)]">写文章</h1>
         <p className="mt-2 text-[var(--muted)]">
-          VS Code 风格 Markdown 编辑：语法高亮、中文词条提示、补全与悬停说明。也可上传本地{" "}
+          类 VS Code 编辑体验：语法高亮、中文词条、Tab 提示、草稿自动保存、图片上传。也可上传本地{" "}
           <code className="text-[var(--chip-fg)]">.md</code> 文件，保存到{" "}
           <code className="text-[var(--chip-fg)]">content/posts/</code>。
         </p>

@@ -1,30 +1,16 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { PostMeta } from "@/lib/posts";
 import { formatDate } from "@/lib/format";
+import { PostCover } from "@/components/PostCover";
 
 export function PostCard({ post }: { post: PostMeta }) {
   return (
-    <article className="card-neon group overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] transition duration-300 hover:border-fuchsia-400/50 sm:flex sm:items-center">
-      {/* 左侧封面：完整显示文字，居中裁切 */}
+    <article className="post-card group overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] transition duration-300 sm:flex sm:items-stretch">
       <Link
         href={`/posts/${post.slug}`}
-        className="relative mx-4 mt-4 block aspect-[16/9] shrink-0 overflow-hidden rounded-xl border border-[var(--border)] bg-[#0a0614] sm:mx-4 sm:my-4 sm:aspect-auto sm:h-[7.5rem] sm:w-[13.5rem] md:h-32 md:w-56"
+        className="relative mx-4 mt-4 block aspect-[16/9] shrink-0 overflow-hidden rounded-xl border border-[var(--border)] sm:mx-4 sm:my-4 sm:aspect-auto sm:h-auto sm:min-h-[7.5rem] sm:w-40 md:w-52"
       >
-        {post.cover ? (
-          <Image
-            src={post.cover}
-            alt={post.title}
-            fill
-            className="object-contain object-center p-1 transition duration-500 group-hover:scale-[1.03]"
-            sizes="(max-width: 640px) 100vw, 224px"
-            unoptimized={post.cover.endsWith(".svg")}
-          />
-        ) : (
-          <span className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-fuchsia-600/30 via-purple-700/25 to-cyan-600/20 px-3 text-center text-sm font-semibold leading-snug text-fuchsia-100">
-            {post.title}
-          </span>
-        )}
+        <PostCover post={post} size="sm" className="absolute inset-0 h-full w-full" />
       </Link>
 
       <div className="min-w-0 flex-1 p-5 pt-4 sm:py-5 sm:pr-6 sm:pl-1">
@@ -35,16 +21,25 @@ export function PostCard({ post }: { post: PostMeta }) {
           {post.featured && (
             <>
               <span aria-hidden>·</span>
-              <span className="text-[var(--chip-fg)]">精选</span>
+              <span className="font-medium text-[var(--accent)]">精选</span>
+            </>
+          )}
+          {post.series && (
+            <>
+              <span aria-hidden>·</span>
+              <Link
+                href={`/series/${encodeURIComponent(post.series)}`}
+                className="text-[var(--chip-fg)] hover:underline"
+              >
+                {post.series}
+                {post.seriesOrder ? ` #${post.seriesOrder}` : ""}
+              </Link>
             </>
           )}
         </div>
 
         <h2 className="text-xl font-semibold tracking-tight text-[var(--heading)] transition group-hover:text-[var(--accent)]">
-          <Link
-            href={`/posts/${post.slug}`}
-            className="hover:underline decoration-[var(--accent)]/60 underline-offset-4"
-          >
+          <Link href={`/posts/${post.slug}`} className="hover:underline underline-offset-4">
             {post.title}
           </Link>
         </h2>
@@ -59,7 +54,7 @@ export function PostCard({ post }: { post: PostMeta }) {
               <li key={tag}>
                 <Link
                   href={`/tags/${encodeURIComponent(tag)}`}
-                  className="rounded-full border border-[var(--border)] bg-[var(--chip-bg)] px-2.5 py-1 text-xs text-[var(--chip-fg)] transition hover:border-[var(--accent)]"
+                  className="inline-block rounded-full border border-[var(--border)] bg-[var(--chip-bg)] px-2.5 py-1 text-xs text-[var(--chip-fg)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
                 >
                   #{tag}
                 </Link>

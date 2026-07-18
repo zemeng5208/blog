@@ -68,7 +68,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('grokdemo-theme');if(t==='soft'||t==='neon')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+            __html: `(function(){try{var a=['neon','soft','paper','terminal','magazine','sky','ink','linear'];var t=localStorage.getItem('blog-theme')||localStorage.getItem('grokdemo-theme');if(t==='cyber')t='neon';if(a.indexOf(t)>=0)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
           }}
         />
       </head>

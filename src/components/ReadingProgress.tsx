@@ -28,10 +28,12 @@ export function ReadingProgress() {
       aria-label="阅读进度"
     >
       <div
-        className="h-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-400 transition-[width] duration-100 ease-out"
+        className="h-full transition-[width] duration-100 ease-out"
         style={{
           width: `${progress}%`,
-          boxShadow: progress > 0 ? "0 0 12px rgba(232,121,249,0.65)" : "none",
+          background:
+            "linear-gradient(90deg, var(--grad-from), var(--grad-via), var(--grad-to))",
+          boxShadow: progress > 0 ? "0 0 12px color-mix(in srgb, var(--accent) 55%, transparent)" : "none",
         }}
       />
     </div>

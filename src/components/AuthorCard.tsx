@@ -52,7 +52,7 @@ export async function AuthorCard({ compact = false }: { compact?: boolean }) {
             rel="noopener noreferrer"
             className="text-[var(--link)] hover:text-[var(--accent)]"
           >
-            GitHub
+            代码仓库
           </a>
           {profile.email && (
             <a

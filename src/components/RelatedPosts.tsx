@@ -13,10 +13,10 @@ export function RelatedPosts({ posts }: { posts: PostMeta[] }) {
           <li key={post.slug}>
             <Link
               href={`/posts/${post.slug}`}
-              className="card-neon block h-full rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 transition hover:border-fuchsia-400/45"
+              className="card-neon block h-full rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 transition hover:border-[var(--accent)]"
             >
               <p className="text-xs text-[var(--muted)]">{formatDate(post.date)}</p>
-              <p className="mt-1.5 text-sm font-medium leading-snug text-[var(--heading)]">
+              <p className="mt-1.5 text-sm font-medium leading-snug text-[var(--heading)] transition group-hover:text-[var(--accent)]">
                 {post.title}
               </p>
             </Link>

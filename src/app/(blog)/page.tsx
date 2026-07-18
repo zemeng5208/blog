@@ -5,11 +5,14 @@ import { PostCard } from "@/components/PostCard";
 import { getAllPosts, getAllTags, getFeaturedPosts } from "@/lib/posts";
 import { siteConfig } from "@/lib/site";
 
-export default function HomePage() {
-  const posts = getAllPosts();
-  const featured = getFeaturedPosts()[0];
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const posts = await getAllPosts();
+  const featuredList = await getFeaturedPosts();
+  const featured = featuredList[0];
   const latest = posts.filter((p) => p.slug !== featured?.slug).slice(0, 5);
-  const tags = getAllTags().slice(0, 8);
+  const tags = (await getAllTags()).slice(0, 8);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -26,7 +29,10 @@ export default function HomePage() {
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/posts"
-            className="btn-neon inline-flex items-center rounded-full bg-gradient-to-r from-fuchsia-600 via-purple-600 to-cyan-500 px-5 py-2.5 text-sm font-medium text-white transition hover:brightness-110"
+            className="btn-neon inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium text-white transition hover:brightness-110"
+            style={{
+              background: "linear-gradient(135deg, var(--grad-from), var(--grad-via), var(--grad-to))",
+            }}
           >
             浏览全部文章
           </Link>
@@ -62,7 +68,7 @@ export default function HomePage() {
         <section className="mb-10">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-medium text-[var(--muted)]">热门标签</h2>
-            <Link href="/tags" className="text-sm text-cyan-300 hover:text-fuchsia-300 hover:underline">
+            <Link href="/tags" className="text-sm text-[var(--link)] hover:text-[var(--accent)] hover:underline">
               全部标签
             </Link>
           </div>
@@ -71,7 +77,7 @@ export default function HomePage() {
               <Link
                 key={tag}
                 href={`/tags/${encodeURIComponent(tag)}`}
-                className="rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm text-[var(--muted)] transition hover:border-fuchsia-400/50 hover:text-fuchsia-200"
+                className="rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm text-[var(--muted)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
                 #{tag}
                 <span className="ml-1.5 text-xs opacity-70">{count}</span>
@@ -84,14 +90,14 @@ export default function HomePage() {
       <section>
         <div className="mb-6 flex items-end justify-between gap-4">
           <h2 className="text-xl font-semibold tracking-tight text-[var(--heading)]">最新文章</h2>
-          <Link href="/posts" className="text-sm text-cyan-300 hover:text-fuchsia-300 hover:underline">
+          <Link href="/posts" className="text-sm text-[var(--link)] hover:text-[var(--accent)] hover:underline">
             查看更多 →
           </Link>
         </div>
 
         {latest.length === 0 && !featured ? (
           <p className="rounded-2xl border border-dashed border-[var(--border)] p-10 text-center text-[var(--muted)]">
-            还没有文章，请在 <code className="text-fuchsia-300">content/posts</code> 下添加 Markdown
+            还没有文章，请在 <code className="text-[var(--chip-fg)]">content/posts</code> 下添加 Markdown
             文件。
           </p>
         ) : (

@@ -3,10 +3,12 @@
 import { useEffect, useRef } from "react";
 import { siteConfig, isGiscusEnabled } from "@/lib/site";
 import { useTheme } from "@/components/ThemeProvider";
+import { getThemeMeta } from "@/lib/themes";
 
 export function GiscusComments() {
   const ref = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
+  const dark = getThemeMeta(theme).dark;
 
   useEffect(() => {
     if (!isGiscusEnabled() || !ref.current) return;
@@ -25,10 +27,10 @@ export function GiscusComments() {
     script.setAttribute("data-reactions-enabled", "1");
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");
-    script.setAttribute("data-theme", theme === "neon" ? "transparent_dark" : "light");
+    script.setAttribute("data-theme", dark ? "transparent_dark" : "light");
     script.setAttribute("data-lang", "zh-CN");
     ref.current.appendChild(script);
-  }, [theme]);
+  }, [theme, dark]);
 
   if (!isGiscusEnabled()) {
     return (

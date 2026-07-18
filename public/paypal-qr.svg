@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480" fill="none">
+  <rect width="480" height="480" rx="24" fill="#ffffff"/>
+  <rect x="24" y="24" width="432" height="432" rx="16" fill="#f5f7fa" stroke="#003087" stroke-width="4"/>
+  <!-- 简化二维码风格占位网格 -->
+  <g fill="#003087">
+    <rect x="64" y="64" width="96" height="96" rx="8"/>
+    <rect x="80" y="80" width="64" height="64" rx="4" fill="#ffffff"/>
+    <rect x="96" y="96" width="32" height="32" rx="2"/>
+    <rect x="320" y="64" width="96" height="96" rx="8"/>
+    <rect x="336" y="80" width="64" height="64" rx="4" fill="#ffffff"/>
+    <rect x="352" y="96" width="32" height="32" rx="2"/>
+    <rect x="64" y="320" width="96" height="96" rx="8"/>
+    <rect x="80" y="336" width="64" height="64" rx="4" fill="#ffffff"/>
+    <rect x="96" y="352" width="32" height="32" rx="2"/>
+    <rect x="192" y="64" width="24" height="24"/>
+    <rect x="232" y="64" width="24" height="24"/>
+    <rect x="272" y="64" width="24" height="24"/>
+    <rect x="192" y="104" width="24" height="24"/>
+    <rect x="272" y="104" width="24" height="24"/>
+    <rect x="192" y="144" width="24" height="24"/>
+    <rect x="232" y="144" width="24" height="24"/>
+    <rect x="272" y="144" width="24" height="24"/>
+    <rect x="192" y="192" width="24" height="24"/>
+    <rect x="232" y="192" width="24" height="24"/>
+    <rect x="272" y="192" width="24" height="24"/>
+    <rect x="192" y="232" width="24" height="24"/>
+    <rect x="272" y="232" width="24" height="24"/>
+    <rect x="192" y="272" width="24" height="24"/>
+    <rect x="232" y="272" width="24" height="24"/>
+    <rect x="272" y="272" width="24" height="24"/>
+    <rect x="320" y="192" width="24" height="24"/>
+    <rect x="360" y="192" width="24" height="24"/>
+    <rect x="400" y="192" width="24" height="24"/>
+    <rect x="320" y="232" width="24" height="24"/>
+    <rect x="400" y="232" width="24" height="24"/>
+    <rect x="320" y="272" width="24" height="24"/>
+    <rect x="360" y="272" width="24" height="24"/>
+    <rect x="400" y="272" width="24" height="24"/>
+    <rect x="192" y="320" width="24" height="24"/>
+    <rect x="232" y="320" width="24" height="24"/>
+    <rect x="272" y="320" width="24" height="24"/>
+    <rect x="320" y="320" width="24" height="24"/>
+    <rect x="360" y="360" width="24" height="24"/>
+    <rect x="400" y="400" width="24" height="24"/>
+    <rect x="192" y="400" width="24" height="24"/>
+    <rect x="272" y="360" width="24" height="24"/>
+  </g>
+  <text x="240" y="250" text-anchor="middle" fill="#003087" font-family="system-ui,sans-serif" font-size="18" font-weight="700">PayPal</text>
+  <text x="240" y="278" text-anchor="middle" fill="#009cde" font-family="system-ui,sans-serif" font-size="13">请替换为你的收款码图片</text>
+</svg>
