@@ -10,7 +10,7 @@ export const siteConfig = {
   description:
     "Build · Ship · Glow —— 记录编程、工程实践与技术思考。分享前端、后端、工具链与成长笔记。",
   /** 站点完整 URL，用于 RSS / sitemap / SEO（上线后请改成真实域名） */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://zemeng5208-blog.nydiaruby20101986rvz.chatgpt.site",
   locale: "zh-CN",
 
   /**
@@ -36,7 +36,7 @@ export const siteConfig = {
       name: "Blog 技术博客",
       description:
         "Next.js + MySQL + Monaco 编辑器的个人技术博客：主题系统、Markdown 写作、PayPal 赞助与 GitHub 资料同步。",
-      url: "http://localhost:3000",
+      url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://zemeng5208-blog.nydiaruby20101986rvz.chatgpt.site",
       repo: "https://github.com/zemeng5208",
       tags: ["Next.js", "TypeScript", "MySQL"],
       highlight: "本站",

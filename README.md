@@ -1,5 +1,7 @@
 # Blog · 技术博客
 
+**在线访问：** [https://zemeng5208-blog.nydiaruby20101986rvz.chatgpt.site](https://zemeng5208-blog.nydiaruby20101986rvz.chatgpt.site)
+
 基于 **Next.js + vinext + TypeScript + Tailwind + D1 + R2** 的个人技术博客，面向 **OpenAI Sites / Cloudflare Workers** 部署。
 
 ## 项目目录
