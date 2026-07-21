@@ -188,7 +188,7 @@ export async function dbPing(): Promise<{ ok: boolean; message: string }> {
     await db.run(sql`SELECT 1 AS ok`);
     return { ok: true, message: "D1 连接正常" };
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    return { ok: false, message };
+    console.error("D1 health check failed", error);
+    return { ok: false, message: "Database health check failed" };
   }
 }

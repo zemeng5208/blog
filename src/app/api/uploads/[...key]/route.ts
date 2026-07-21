@@ -43,7 +43,7 @@ export async function GET(_req: Request, ctx: Ctx) {
     const body = await obj.arrayBuffer();
     return new NextResponse(body, { status: 200, headers });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "error";
-    return new NextResponse(message, { status: 500 });
+    console.error("Upload read failed", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

@@ -107,7 +107,7 @@ export async function POST(req: Request) {
       url: draft ? null : `/posts/${encodeURIComponent(slug)}`,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "保存失败";
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    console.error("Request failed", error);
+    return NextResponse.json({ ok: false, error: "服务器处理失败" }, { status: 500 });
   }
 }

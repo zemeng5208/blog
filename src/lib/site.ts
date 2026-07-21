@@ -64,7 +64,7 @@ export const siteConfig = {
   social: {
     /** 会被 GitHub 主页链接覆盖展示，仍保留作回退 */
     github: "https://github.com/zemeng5208",
-    email: "2403543757@qq.com",
+    email: "",
     twitter: "",
     rss: "/feed.xml",
   },
@@ -83,7 +83,7 @@ export const siteConfig = {
     /** 建议金额文案（展示用） */
     suggestedAmounts: ["$3 咖啡", "$5 加餐", "$10 工具月费", "$20 大力支持"],
     /** 是否在赞助页显示邮箱联系 */
-    showEmail: true,
+    showEmail: false,
     thanksTitle: "谢谢你 ☕",
     thanksBody:
       "赞助不是义务，而是认可。若文章帮到你，一条反馈或一杯咖啡都是莫大鼓励。",
