@@ -41,16 +41,15 @@ export function sitesPlugin(): Plugin {
       }
 
       // 确保 hosting 配置存在
-      const openaiDir = path.join(root, ".openai");
-      fs.mkdirSync(openaiDir, { recursive: true });
-      const hostingPath = path.join(openaiDir, "hosting.json");
-      if (!fs.existsSync(hostingPath)) {
-        fs.writeFileSync(
-          hostingPath,
-          JSON.stringify({ d1: "DB", r2: "UPLOADS" }, null, 2) + "\n",
-          "utf8",
-        );
+      // Keep the source metadata at the repository root and copy it into the
+      // deployable artifact expected by Sites.
+      const sourceHostingPath = path.join(root, ".openai", "hosting.json");
+      if (!fs.existsSync(sourceHostingPath)) {
+        throw new Error("Missing .openai/hosting.json");
       }
+      const distOpenaiDir = path.join(root, "dist", ".openai");
+      fs.mkdirSync(distOpenaiDir, { recursive: true });
+      fs.copyFileSync(sourceHostingPath, path.join(distOpenaiDir, "hosting.json"));
     },
   };
 }
