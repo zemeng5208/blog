@@ -50,6 +50,13 @@ export function sitesPlugin(): Plugin {
       const distOpenaiDir = path.join(root, "dist", ".openai");
       fs.mkdirSync(distOpenaiDir, { recursive: true });
       fs.copyFileSync(sourceHostingPath, path.join(distOpenaiDir, "hosting.json"));
+
+      const sourceDrizzleDir = path.join(root, "drizzle");
+      if (fs.existsSync(sourceDrizzleDir)) {
+        fs.cpSync(sourceDrizzleDir, path.join(distOpenaiDir, "drizzle"), {
+          recursive: true,
+        });
+      }
     },
   };
 }
