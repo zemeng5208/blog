@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { AuthorCard } from "@/components/AuthorCard";
 import { GiscusComments } from "@/components/GiscusComments";
 import { Markdown } from "@/components/Markdown";
@@ -49,6 +49,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const { slug } = await params;
+  if (slug === "chatgpt-safe-launcher-public-beta") {
+    permanentRedirect("/posts/winbridge-recovery-public-beta");
+  }
   let post;
   try {
     post = await getPostBySlug(slug);
