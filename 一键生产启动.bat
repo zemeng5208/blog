@@ -29,7 +29,7 @@ if not exist "node_modules\" (
 if not exist ".dev.vars" (
   echo [提示] 缺少 .dev.vars，从 .env.example 生成模板...
   (
-    echo POST_WRITE_SECRET=local-dev-secret
+    for /f %%s in ('powershell -NoProfile -Command "$b=New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); -join ($b ^| ForEach-Object { $_.ToString(''x2'') })"') do echo POST_WRITE_SECRET=%%s
     echo NEXT_PUBLIC_SITE_URL=http://localhost:3000
   ) > .dev.vars
 )
@@ -57,8 +57,10 @@ if errorlevel 1 (
 )
 
 echo [3/4] 释放 3000 端口...
-for /f "tokens=5" %%p in ('netstat -ano ^| findstr :3000 ^| findstr LISTENING') do (
-  taskkill /F /PID %%p >nul 2>&1
+netstat -ano | findstr :3000 | findstr LISTENING >nul 2>&1
+if not errorlevel 1 (
+  echo [错误] 端口 3000 已被占用。请自行确认并关闭对应程序后重试。
+  exit /b 1
 )
 timeout /t 1 /nobreak >nul
 

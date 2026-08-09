@@ -74,7 +74,7 @@ export async function POST(req: Request) {
     const url = `/api/uploads/${key}`;
     return NextResponse.json({ ok: true, url });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "上传失败";
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    console.error("Upload failed", error);
+    return NextResponse.json({ ok: false, error: "服务器处理失败" }, { status: 500 });
   }
 }

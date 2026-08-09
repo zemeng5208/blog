@@ -29,9 +29,10 @@ if not exist "node_modules\" (
 )
 
 echo [2/3] 释放 3000 端口（若被占用）...
-for /f "tokens=5" %%p in ('netstat -ano ^| findstr :3000 ^| findstr LISTENING') do (
-  echo       结束进程 PID=%%p
-  taskkill /F /PID %%p >nul 2>&1
+netstat -ano | findstr :3000 | findstr LISTENING >nul 2>&1
+if not errorlevel 1 (
+  echo [错误] 端口 3000 已被占用。请自行确认并关闭对应程序后重试。
+  exit /b 1
 )
 timeout /t 1 /nobreak >nul
 
