@@ -90,10 +90,11 @@ export const siteConfig = {
   },
 
   giscus: {
-    repo: process.env.NEXT_PUBLIC_GISCUS_REPO ?? "",
-    repoId: process.env.NEXT_PUBLIC_GISCUS_REPO_ID ?? "",
-    category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY ?? "Announcements",
-    categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID ?? "",
+    repo: process.env.NEXT_PUBLIC_GISCUS_REPO || "zemeng5208/blog",
+    repoId: process.env.NEXT_PUBLIC_GISCUS_REPO_ID || "R_kgDOTch2yA",
+    category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY || "Announcements",
+    categoryId:
+      process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || "DIC_kwDOTch2yM4DDApf",
   },
 };
 
