@@ -1,0 +1,96 @@
+-- Generated from content/posts/winbridge-v3-1-1-maintenance.md
+INSERT INTO posts (slug, title, description, content, date, tags, cover, series, series_order, featured, draft)
+VALUES ('winbridge-v3-1-1-maintenance', 'WinBridge Recovery v3.1.1：一次围绕可用性、更新和卸载安全的维护版本', '记录 v3.1.1 为什么要做、修了哪些真实使用问题，以及为什么这次维护版没有去动修复核心。', 'WinBridge Recovery 的 `v3.1.1` 不是一次“大改版”，而是一次很典型的维护版本：重点不是堆新功能，而是把已经存在的功能修到更可靠、更顺手。
+
+这次维护版发布后，我反而更确定了一件事：**桌面工具真正难的地方，往往不是把功能做出来，而是把更新、窗口生命周期、卸载和异常路径处理干净。**
+
+## 这次为什么要发 3.1.1
+
+在 `v3.1` 完成设置中心、多语言、更新流程和更完整的启动器体验后，真实使用中又暴露出几类很具体的问题：
+
+- 应用内更新如果只依赖 GitHub 的稳定版 `releases/latest`，会忽略可安装的预发布版本；
+- 游戏选择窗口关闭得太早时，可能触发启动器自身的自动关闭逻辑，把刚打开的小游戏一起带走；
+- 设置齿轮入口在一次界面调整后变得不够直接；
+- 进度动画和粒子效果虽然好看，但不应该影响鼠标、设置窗口和低性能设备上的响应；
+- Windows 上很深的备份目录可能超过旧的路径长度假设，导致卸载阶段处理不完整。
+
+这些问题都不是“修复引擎完全失效”那种大事故，但它们会直接影响一个工具给人的可靠感。
+
+## 更新发现不再只盯着稳定版
+
+`v3.1.1` 的更新中心不再简单依赖 GitHub 的稳定版 `releases/latest`。
+
+新的逻辑会从可用 Release 中选择真正可安装的版本，而不是因为某个版本标记为 prerelease 就完全看不到它。
+
+这对 WinBridge 很重要，因为后续开发版本和稳定版本会长期并存：稳定用户需要保守，测试者又需要看得到开发预览。更新逻辑必须理解这种发布模型，而不是把“最新”粗暴等同于“最新稳定版”。
+
+## 修复小游戏和窗口生命周期
+
+Snake 和 Minesweeper 的问题看起来很小，但它暴露的是一个桌面应用里很典型的生命周期坑。
+
+如果先关闭选择窗口，再打开目标窗口，主程序可能在这两步之间判断“没有需要保持的窗口了”，于是执行自动关闭。
+
+`v3.1.1` 改成先打开目标小游戏，再关闭选择器。顺序只差一步，结果却完全不同。
+
+这也是我现在做 UI 时越来越重视的一点：**不是每个 bug 都来自复杂算法，很多 bug 来自事件顺序。**
+
+## 设置齿轮重新回到快速入口
+
+设置齿轮现在重新打开一个紧凑菜单，让常用入口保持在第一层：小游戏、主题、公开动态、完整设置。
+
+而更复杂的配置仍然留在完整设置中心里。我的目标不是把所有功能都塞进一个窗口，而是让“经常点的”和“偶尔配置一次的”分层。
+
+## 减少装饰动画的工作量
+
+`v3.1.1` 下调了进度和粒子动画的更新频率，也减少了一部分波形采样工作。
+
+这不是要把界面变得朴素，而是明确优先级：
+
+> 恢复工具的第一任务是可靠地完成检查和修复，动画只能在不抢占交互体验的前提下存在。
+
+项目里仍然保留 `Reduce Motion`，用户可以直接关闭粒子动画。后续 4.0 的设计也会继续沿用这个原则。
+
+## 卸载器终于认真面对长路径
+
+这次我专门给卸载器做了深层路径回归测试。
+
+新的清理逻辑可以处理超过旧式 Windows 路径长度假设的备份树，同时：
+
+- 容忍文件或目录在清理过程中已经消失；
+- 清除阻碍删除的只读等文件属性；
+- 不递归穿过目录 reparse point；
+- 不因为一个异常节点就把整个卸载过程变成不受控删除。
+
+回归测试覆盖了 **427 字符路径、只读文件、以及已经不存在的目录**。
+
+对于一个会保存恢复备份的工具来说，卸载可靠性本身就是安全边界的一部分。
+
+## 这次刻意没有改什么
+
+`v3.1.1` 没有去重写修复核心。
+
+这次主要聚焦启动器交互、更新发现、动画负载和卸载清理，而没有借维护版本的名义偷偷换掉核心恢复逻辑。我越来越倾向于让维护版本保持范围清晰：该修什么就修什么，避免一个小版本同时引入太多未知变量。
+
+## 当前建议
+
+目前正常日常使用仍然以 **v3.1.1 稳定版**为主。
+
+4.0 已经有 Alpha 开发预览，但它现在更适合源码审查、架构验证和测试，不应该因为版本号更大就替代稳定版。
+
+- [v3.1.1 Release](https://github.com/zemeng5208/winbridge-recovery/releases/tag/v3.1.1)
+- [项目源码](https://github.com/zemeng5208/winbridge-recovery)
+- [快速反馈](https://github.com/zemeng5208/winbridge-recovery/issues/new?template=quick_feedback.yml)
+
+如果你实际用过 WinBridge，无论成功、部分成功还是完全没解决，都欢迎在文章评论区或 GitHub 留一句结果。对这种恢复工具来说，**成功反馈和失败反馈同样有价值。**', '2026-08-14', '["WinBridge Recovery","Windows","Codex","版本发布","工程实践"]', NULL, 'Windows 工具开发', 2, 0, 0)
+ON CONFLICT(slug) DO UPDATE SET
+  title=excluded.title,
+  description=excluded.description,
+  content=excluded.content,
+  date=excluded.date,
+  tags=excluded.tags,
+  cover=excluded.cover,
+  series=excluded.series,
+  series_order=excluded.series_order,
+  featured=excluded.featured,
+  draft=excluded.draft,
+  updated_at=CURRENT_TIMESTAMP;
